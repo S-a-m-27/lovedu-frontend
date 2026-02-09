@@ -95,8 +95,8 @@ export default function AdminUploadPage() {
   const [creatingCourse, setCreatingCourse] = useState(false)
   const [logoIndex, setLogoIndex] = useState(0)
   
-  const signinSources = ['/signin.png', '/signin.jpeg', '/signin.jpg'] as const
-  const signinSrc = signinSources[Math.min(logoIndex, signinSources.length - 1)]
+  const adminSources = ['/admin.png', '/admin.jpeg', '/admin.jpg'] as const
+  const adminSrc = adminSources[Math.min(logoIndex, adminSources.length - 1)]
 
   useEffect(() => {
     checkAdminAndLoadFiles()
@@ -543,17 +543,17 @@ export default function AdminUploadPage() {
           <div className="flex justify-center mb-6">
             <div className="relative w-96 h-36">
               <Image
-                src={signinSrc}
-                alt="LovEdu Logo"
+                src={adminSrc}
+                alt="LovEdu Admin Logo"
                 fill
                 sizes="384px"
                 className="object-contain"
                 priority
                 unoptimized
                 onError={() => {
-                  setLogoIndex((prev) => (prev < signinSources.length - 1 ? prev + 1 : prev))
+                  setLogoIndex((prev) => (prev < adminSources.length - 1 ? prev + 1 : prev))
                 }}
-                key={signinSrc}
+                key={adminSrc}
               />
             </div>
           </div>
