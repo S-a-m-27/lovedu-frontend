@@ -541,12 +541,12 @@ export default function AdminUploadPage() {
 
           {/* Logo Row - Centered */}
           <div className="flex justify-center mb-6">
-            <div className="relative w-80 h-28">
+            <div className="relative w-96 h-36">
               <Image
                 src={signinSrc}
                 alt="LovEdu Logo"
                 fill
-                sizes="320px"
+                sizes="384px"
                 className="object-contain"
                 priority
                 unoptimized
