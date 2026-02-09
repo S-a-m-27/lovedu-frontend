@@ -1,0 +1,45 @@
+{
+  "welcome": "Welcome to University AI Studio",
+  "description": "This is the English version of the site.",
+  "auth": {
+    "loginTitle": "Sign In",
+    "signupTitle": "Create Account",
+    "welcome": "Welcome to University AI Studio",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?",
+    "domainRestriction": "Access restricted to Kuwait University members only.",
+    "invalidCredentials": "Invalid email or password",
+    "accountCreated": "Account created successfully! Please check your email to verify your account."
+  },
+  "common": {
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "loading": "Loading...",
+    "login": "Login",
+    "signup": "Sign Up",
+    "logout": "Logout",
+    "settings": "Settings",
+    "newChat": "New Chat",
+    "selectAssistant": "Select Assistant"
+  },
+  "chat": {
+    "title": "University AI Assistant",
+    "placeholder": "Type your message here...",
+    "send": "Send",
+    "thinking": "AI is thinking...",
+    "welcome": "Hello! I'm your University AI Assistant. How can I help you today?"
+  },
+  "subscribe": {
+    "title": "Subscription Required",
+    "description": "Please subscribe to continue using the AI Assistant",
+    "subscribe": "Subscribe Now",
+    "pricing": "Pricing Plans"
+  }
+}
+
+
+
+
+
+
