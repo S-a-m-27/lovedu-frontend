@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { LanguageSwitcher } from '@/components/LanguageSwitcher'
 import { ThemeToggle } from '@/components/ThemeToggle'
-import { LogoHorizontal } from '@/components/Logo'
+import Image from 'next/image'
 import { apiClient } from '@/lib/apiClient'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Upload, FileText, Shield, Calendar, CheckCircle, X, Trash2, Download, Loader2, AlertCircle, Eye, ArrowLeft, GraduationCap, Plus, Edit, Save, LogOut } from 'lucide-react'
@@ -93,6 +93,10 @@ export default function AdminUploadPage() {
   const [newCourse, setNewCourse] = useState({ code: '', name: '', description: '' })
   const [editingCourseData, setEditingCourseData] = useState<Record<string, { code: string; name: string; description: string }>>({})
   const [creatingCourse, setCreatingCourse] = useState(false)
+  const [logoIndex, setLogoIndex] = useState(0)
+  
+  const signinSources = ['/signin.png', '/signin.jpeg', '/signin.jpg'] as const
+  const signinSrc = signinSources[Math.min(logoIndex, signinSources.length - 1)]
 
   useEffect(() => {
     checkAdminAndLoadFiles()
@@ -537,7 +541,21 @@ export default function AdminUploadPage() {
 
           {/* Logo Row - Centered */}
           <div className="flex justify-center mb-6">
-            <LogoHorizontal size="lg" />
+            <div className="relative w-80 h-28">
+              <Image
+                src={signinSrc}
+                alt="LovEdu Logo"
+                fill
+                sizes="320px"
+                className="object-contain"
+                priority
+                unoptimized
+                onError={() => {
+                  setLogoIndex((prev) => (prev < signinSources.length - 1 ? prev + 1 : prev))
+                }}
+                key={signinSrc}
+              />
+            </div>
           </div>
 
           {/* Title and Subtitle */}
