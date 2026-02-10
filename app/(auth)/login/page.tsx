@@ -21,7 +21,7 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false)
   const [logoIndex, setLogoIndex] = useState(0)
   
-  const { signIn, signInTestUser } = useSupabaseAuth()
+  const { signIn } = useSupabaseAuth()
   const { t, isRTL, language } = useLanguage()
   const router = useRouter()
 
@@ -64,34 +64,6 @@ export default function LoginPage() {
     }
   }
 
-  const handleTestUserLogin = async () => {
-    setError('')
-    setLoading(true)
-
-    try {
-      console.log('🔄 Starting test user login...')
-      const { data, error } = await signInTestUser()
-      
-      if (error) {
-        console.error('❌ Test user login error:', error)
-        setError(`Test user login failed: ${error.message}. Try manual login with test@ku.edu.kw / testpassword123`)
-      } else {
-        console.log('✅ Test user login successful:', data)
-        console.log('🔄 Redirecting to /chat...')
-        
-        // Add a small delay to ensure state is updated
-        setTimeout(() => {
-          console.log('🚀 Navigating to /chat')
-          router.push('/chat')
-        }, 100)
-      }
-    } catch (err) {
-      console.error('❌ Test user login exception:', err)
-      setError('Test user login failed. Try manual login with test@ku.edu.kw / testpassword123')
-    } finally {
-      setLoading(false)
-    }
-  }
 
   const signinSources = ['/signin.png', '/signin.jpeg', '/signin.jpg'] as const
   const signinSrc = signinSources[Math.min(logoIndex, signinSources.length - 1)]
@@ -182,42 +154,6 @@ export default function LoginPage() {
                 {loading ? t('common.loading') : t('common.login')}
               </Button>
             </form>
-
-            {/* Test User Button */}
-            <div className="mt-4">
-              <div className="relative">
-                <div className="absolute inset-0 flex items-center">
-                  <span className="w-full border-t border-gray-300 dark:border-gray-600" />
-                </div>
-                <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-white dark:bg-gray-800 px-2 text-gray-500 dark:text-gray-400">
-                    Development Only
-                  </span>
-                </div>
-              </div>
-              
-              <Button
-                type="button"
-                onClick={handleTestUserLogin}
-                disabled={loading}
-                className="w-full mt-4"
-              >
-                {loading ? 'Logging in...' : 'Login as Test User (test@ku.edu.kw)'}
-              </Button>
-              
-              <div className="mt-2 text-center">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setEmail('test@ku.edu.kw')
-                    setPassword('testpassword123')
-                  }}
-                  className="text-xs text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 underline"
-                >
-                  Fill test credentials manually
-                </button>
-              </div>
-            </div>
 
             <div className="mt-6 text-center">
               <p className="text-sm text-gray-600 dark:text-gray-400">
