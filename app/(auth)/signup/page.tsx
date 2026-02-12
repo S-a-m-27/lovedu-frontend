@@ -61,6 +61,13 @@ export default function SignupPage() {
       return
     }
 
+    // Check if email is from Kuwait University
+    if (!isKuwaitUniversityEmail(email)) {
+      setError(t('auth.domainRestriction'))
+      setLoading(false)
+      return
+    }
+
     try {
       const { data, error } = await signUp(email, password, {
         full_name: fullName,
@@ -148,7 +155,7 @@ export default function SignupPage() {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="user@ku.edu.kw or user@example.com"
+                  placeholder="user@ku.edu.kw"
                   required
                   className="w-full"
                 />
