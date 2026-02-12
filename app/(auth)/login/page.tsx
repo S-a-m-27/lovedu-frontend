@@ -31,11 +31,12 @@ export default function LoginPage() {
     setLoading(true)
 
     // Check if email is from Kuwait University
-    if (!isKuwaitUniversityEmail(email)) {
-      setError(t('auth.domainRestriction'))
-      setLoading(false)
-      return
-    }
+    // COMMENTED OUT FOR TESTING - Allow all emails
+    // if (!isKuwaitUniversityEmail(email)) {
+    //   setError(t('auth.domainRestriction'))
+    //   setLoading(false)
+    //   return
+    // }
 
     try {
       const { data, error } = await signIn(email, password)
