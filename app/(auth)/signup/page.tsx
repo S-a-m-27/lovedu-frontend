@@ -98,10 +98,12 @@ export default function SignupPage() {
       })
       
       if (error) {
+        // Extract error message properly
+        const errorMessage = error?.message || error || 'Signup failed. Please try again.'
         toast({
           variant: "destructive",
           title: "Signup Failed",
-          description: getErrorMessage(error),
+          description: getErrorMessage(errorMessage),
         })
       } else {
         toast({

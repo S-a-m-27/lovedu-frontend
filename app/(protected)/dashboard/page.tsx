@@ -143,7 +143,9 @@ export default function ProfilePage() {
                 <Mail className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400 flex-shrink-0" />
                 <div className="flex-1 min-w-0">
                   <p className="text-xs sm:text-sm text-gray-400">Email</p>
-                  <p className="text-sm sm:text-base text-white font-medium break-words">{currentUser?.email || 'N/A'}</p>
+                  <p className="text-sm sm:text-base text-white font-medium break-words">
+                    {userMetadata.original_email || currentUser?.email || 'N/A'}
+                  </p>
                 </div>
               </div>
 

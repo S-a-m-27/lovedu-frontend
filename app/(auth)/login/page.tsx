@@ -48,10 +48,12 @@ export default function LoginPage() {
       const { data, error } = await signIn(email, password)
       
       if (error) {
+        // Extract error message properly
+        const errorMessage = error?.message || error || 'Login failed. Please try again.'
         toast({
           variant: "destructive",
           title: "Login Failed",
-          description: getErrorMessage(error),
+          description: getErrorMessage(errorMessage),
         })
       } else {
         // Check if user is admin and redirect accordingly
