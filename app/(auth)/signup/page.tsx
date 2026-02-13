@@ -13,6 +13,8 @@ import { isKuwaitUniversityEmail } from '@/lib/utils'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { Eye, EyeOff } from 'lucide-react'
+import { useToast } from '@/hooks/useToast'
+import { getErrorMessage } from '@/lib/errorMessages'
 
 export default function SignupPage() {
   const [email, setEmail] = useState('')
@@ -22,51 +24,68 @@ export default function SignupPage() {
   const [confirmPassword, setConfirmPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-  const [error, setError] = useState('')
-  const [success, setSuccess] = useState('')
   const [loading, setLoading] = useState(false)
   const [logoIndex, setLogoIndex] = useState(0)
   
   const { signUp } = useSupabaseAuth()
   const { t, isRTL } = useLanguage()
   const router = useRouter()
+  const { toast } = useToast()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setError('')
-    setSuccess('')
     setLoading(true)
 
     // Validation
     if (!fullName.trim()) {
-      setError('Full name is required')
+      toast({
+        variant: "destructive",
+        title: "Validation Error",
+        description: "Full name is required",
+      })
       setLoading(false)
       return
     }
 
     if (!dateOfBirth) {
-      setError('Date of birth is required')
+      toast({
+        variant: "destructive",
+        title: "Validation Error",
+        description: "Date of birth is required",
+      })
       setLoading(false)
       return
     }
 
     // Check if passwords match
     if (password !== confirmPassword) {
-      setError('Passwords do not match')
+      toast({
+        variant: "destructive",
+        title: "Validation Error",
+        description: "Passwords do not match",
+      })
       setLoading(false)
       return
     }
 
     // Check password length
     if (password.length < 6) {
-      setError('Password must be at least 6 characters')
+      toast({
+        variant: "destructive",
+        title: "Validation Error",
+        description: "Password must be at least 6 characters",
+      })
       setLoading(false)
       return
     }
 
     // Check if email is from Kuwait University
     if (!isKuwaitUniversityEmail(email)) {
-      setError(t('auth.domainRestriction'))
+      toast({
+        variant: "destructive",
+        title: "Access Restricted",
+        description: t('auth.domainRestriction'),
+      })
       setLoading(false)
       return
     }
@@ -78,15 +97,27 @@ export default function SignupPage() {
       })
       
       if (error) {
-        setError(error.message)
+        toast({
+          variant: "destructive",
+          title: "Signup Failed",
+          description: getErrorMessage(error),
+        })
       } else {
-        setSuccess(t('auth.accountCreated'))
+        toast({
+          variant: "success",
+          title: "Account Created",
+          description: t('auth.accountCreated'),
+        })
         setTimeout(() => {
           router.push('/login')
         }, 2000)
       }
     } catch (err) {
-      setError('An error occurred during signup')
+      toast({
+        variant: "destructive",
+        title: "Signup Failed",
+        description: getErrorMessage(err),
+      })
     } finally {
       setLoading(false)
     }
@@ -231,26 +262,6 @@ export default function SignupPage() {
                   </button>
                 </div>
               </div>
-
-              {error && (
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md"
-                >
-                  <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
-                </motion.div>
-              )}
-
-              {success && (
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  className="p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-md"
-                >
-                  <p className="text-sm text-green-600 dark:text-green-400">{success}</p>
-                </motion.div>
-              )}
 
               <Button
                 type="submit"

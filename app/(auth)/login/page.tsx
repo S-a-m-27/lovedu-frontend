@@ -13,27 +13,32 @@ import { isKuwaitUniversityEmail } from '@/lib/utils'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { Shield, Eye, EyeOff } from 'lucide-react'
+import { useToast } from '@/hooks/useToast'
+import { getErrorMessage } from '@/lib/errorMessages'
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
-  const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [logoIndex, setLogoIndex] = useState(0)
   
   const { signIn } = useSupabaseAuth()
   const { t, isRTL, language } = useLanguage()
   const router = useRouter()
+  const { toast } = useToast()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setError('')
     setLoading(true)
 
     // Check if email is from Kuwait University
     if (!isKuwaitUniversityEmail(email)) {
-      setError(t('auth.domainRestriction'))
+      toast({
+        variant: "destructive",
+        title: "Access Restricted",
+        description: t('auth.domainRestriction'),
+      })
       setLoading(false)
       return
     }
@@ -42,7 +47,11 @@ export default function LoginPage() {
       const { data, error } = await signIn(email, password)
       
       if (error) {
-        setError(t('auth.invalidCredentials'))
+        toast({
+          variant: "destructive",
+          title: "Login Failed",
+          description: getErrorMessage(error),
+        })
       } else {
         // Check if user is admin and redirect accordingly
         if (data?.user?.user_metadata) {
@@ -59,7 +68,11 @@ export default function LoginPage() {
         }
       }
     } catch (err) {
-      setError(t('auth.invalidCredentials'))
+      toast({
+        variant: "destructive",
+        title: "Login Failed",
+        description: getErrorMessage(err),
+      })
     } finally {
       setLoading(false)
     }
@@ -149,16 +162,6 @@ export default function LoginPage() {
                   </button>
                 </div>
               </div>
-
-              {error && (
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md"
-                >
-                  <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
-                </motion.div>
-              )}
 
               <Button
                 type="submit"

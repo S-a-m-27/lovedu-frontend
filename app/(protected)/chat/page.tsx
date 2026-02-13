@@ -6,7 +6,9 @@ import { ChatSidebar } from '@/components/ChatSidebar'
 import { ChatMessage } from '@/components/ChatMessage'
 import { Button } from '@/components/ui/button'
 import { apiClient } from '@/lib/apiClient'
-import { Send, Loader2, Menu, X, ChevronDown, AlertCircle } from 'lucide-react'
+import { Send, Loader2, Menu, X, ChevronDown } from 'lucide-react'
+import { useToast } from '@/hooks/useToast'
+import { getErrorMessage } from '@/lib/errorMessages'
 
 interface Message {
   id: string
@@ -22,7 +24,6 @@ export default function ChatPage() {
   const [selectedAssistant, setSelectedAssistant] = useState('typeX')
   const [chatSessionId, setChatSessionId] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
   const [sidebarRefreshTrigger, setSidebarRefreshTrigger] = useState(0)
   const [currentCourseName, setCurrentCourseName] = useState<string | null>(null)
   const [currentCourseId, setCurrentCourseId] = useState<string | null>(null)
@@ -32,6 +33,7 @@ export default function ChatPage() {
   const composerRef = useRef<HTMLTextAreaElement>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const { isRTL, t, language } = useLanguage()
+  const { toast } = useToast()
 
   const scrollToBottom = (behavior: ScrollBehavior = 'smooth') => {
     // Prefer scrollIntoView (works even if container changes)
@@ -106,15 +108,6 @@ export default function ChatPage() {
     el.style.height = `${next}px`
   }, [inputValue])
 
-  // Auto-hide error after 5 seconds
-  useEffect(() => {
-    if (error) {
-      const timer = setTimeout(() => {
-        setError(null)
-      }, 5000)
-      return () => clearTimeout(timer)
-    }
-  }, [error])
 
   // Load chat sessions and history on mount
   useEffect(() => {
@@ -282,7 +275,6 @@ export default function ChatPage() {
     setMessages(prev => [...prev, userMessage])
     setInputValue('')
     setLoading(true)
-    setError(null)
 
     try {
       const response = await apiClient.sendChatMessage(
@@ -294,7 +286,11 @@ export default function ChatPage() {
       )
 
       if (response.error) {
-        setError(response.error)
+        toast({
+          variant: "destructive",
+          title: "Message Failed",
+          description: getErrorMessage(response.error),
+        })
         setLoading(false)
         return
       }
@@ -322,7 +318,11 @@ export default function ChatPage() {
       }
     } catch (err) {
       console.error('Error sending message:', err)
-      setError(t('chat.errors.failedToSend'))
+      toast({
+        variant: "destructive",
+        title: "Message Failed",
+        description: getErrorMessage(err),
+      })
     } finally {
       setLoading(false)
     }
@@ -366,16 +366,18 @@ export default function ChatPage() {
         source: 'internal'
       }
     ])
-    setError(null)
   }
 
   const handleSessionSelect = async (sessionId: string) => {
     setLoading(true)
-    setError(null)
     try {
       const response = await apiClient.getChatSession(sessionId)
       if (response.error) {
-        setError(response.error)
+        toast({
+          variant: "destructive",
+          title: "Failed to Load Session",
+          description: getErrorMessage(response.error),
+        })
         return
       }
 
@@ -424,7 +426,11 @@ export default function ChatPage() {
       }
     } catch (err) {
       console.error('Error loading session:', err)
-      setError(t('chat.errors.failedToLoadSession'))
+      toast({
+        variant: "destructive",
+        title: "Failed to Load Session",
+        description: getErrorMessage(err),
+      })
     } finally {
       setLoading(false)
     }
@@ -578,26 +584,6 @@ export default function ChatPage() {
           )}
         </div>
 
-        {/* Error Toast */}
-        {error && (
-          <div className="fixed top-20 z-50 left-1/2 -translate-x-1/2 max-w-md w-[calc(100%-2rem)] animate-in slide-in-from-top-2 fade-in duration-200">
-            <div className={`bg-red-950/95 border border-red-800/50 rounded-lg shadow-lg backdrop-blur-sm p-3 flex items-start gap-3 ${isRTL ? 'flex-row-reverse' : ''}`}>
-              <AlertCircle className="h-5 w-5 text-red-400 flex-shrink-0 mt-0.5" />
-              <div className="flex-1 min-w-0">
-                <p className={`text-sm text-red-200 leading-relaxed break-words ${isRTL ? 'text-right' : 'text-left'}`}>{error}</p>
-              </div>
-              <button
-                type="button"
-                onClick={() => setError(null)}
-                className="flex-shrink-0 text-red-400 hover:text-red-300 transition-colors p-1 rounded hover:bg-red-900/30"
-                aria-label="Dismiss error"
-              >
-                <X className="h-4 w-4" />
-              </button>
-            </div>
-          </div>
-        )}
-
         {/* Input Area */}
         <div className="sticky bottom-0 z-20 border-t border-white/10 bg-[#071225]/80 backdrop-blur-md">
           <div className="px-4 md:px-6 py-4">
@@ -607,8 +593,6 @@ export default function ChatPage() {
                 value={inputValue}
                   onChange={(e) => {
                     setInputValue(e.target.value)
-                    // Clear error when user starts typing
-                    if (error) setError(null)
                   }}
                   onKeyDown={handleComposerKeyDown}
                 placeholder={t('common.typeMessage')}

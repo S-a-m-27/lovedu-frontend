@@ -10,6 +10,8 @@ import { motion } from 'framer-motion'
 import { Lock, Loader2, ArrowLeft, User, ArrowRight, Eye, EyeOff } from 'lucide-react'
 import { apiClient } from '@/lib/apiClient'
 import { useRouter } from 'next/navigation'
+import { useToast } from '@/hooks/useToast'
+import { getErrorMessage } from '@/lib/errorMessages'
 
 export default function SettingsPage() {
   const { backendUser } = useSupabaseAuth()
@@ -22,31 +24,43 @@ export default function SettingsPage() {
   const [showNewPassword, setShowNewPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [saving, setSaving] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const [success, setSuccess] = useState(false)
+  const { toast } = useToast()
 
   const handleUpdatePassword = async () => {
-    setError(null)
-    setSuccess(false)
-
     // Validation
     if (!currentPassword || !newPassword || !confirmPassword) {
-      setError('All fields are required')
+      toast({
+        variant: "destructive",
+        title: "Validation Error",
+        description: "All fields are required",
+      })
       return
     }
 
     if (newPassword.length < 6) {
-      setError('New password must be at least 6 characters long')
+      toast({
+        variant: "destructive",
+        title: "Validation Error",
+        description: "New password must be at least 6 characters long",
+      })
       return
     }
 
     if (newPassword !== confirmPassword) {
-      setError('New password and confirm password do not match')
+      toast({
+        variant: "destructive",
+        title: "Validation Error",
+        description: "New password and confirm password do not match",
+      })
       return
     }
 
     if (currentPassword === newPassword) {
-      setError('New password must be different from current password')
+      toast({
+        variant: "destructive",
+        title: "Validation Error",
+        description: "New password must be different from current password",
+      })
       return
     }
 
@@ -55,23 +69,30 @@ export default function SettingsPage() {
       const response = await apiClient.updatePassword(currentPassword, newPassword)
       
       if (response.error) {
-        setError(response.error)
+        toast({
+          variant: "destructive",
+          title: "Password Update Failed",
+          description: getErrorMessage(response.error),
+        })
         setSaving(false)
         return
       }
 
       // Success
-      setSuccess(true)
+      toast({
+        variant: "success",
+        title: "Password Updated",
+        description: "Your password has been updated successfully",
+      })
       setCurrentPassword('')
       setNewPassword('')
       setConfirmPassword('')
-      
-      // Clear success message after 3 seconds
-      setTimeout(() => {
-        setSuccess(false)
-      }, 3000)
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to update password')
+      toast({
+        variant: "destructive",
+        title: "Password Update Failed",
+        description: getErrorMessage(err),
+      })
     } finally {
       setSaving(false)
     }
@@ -235,18 +256,6 @@ export default function SettingsPage() {
                   </button>
                 </div>
               </div>
-
-              {error && (
-                <div className="p-3 bg-red-900/20 border border-red-800 rounded-lg">
-                  <p className="text-sm text-red-400">{error}</p>
-                </div>
-              )}
-
-              {success && (
-                <div className="p-3 bg-green-900/20 border border-green-800 rounded-lg">
-                  <p className="text-sm text-green-400">Password updated successfully!</p>
-                </div>
-              )}
 
               <Button
                 onClick={handleUpdatePassword}

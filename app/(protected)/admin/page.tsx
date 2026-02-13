@@ -12,6 +12,8 @@ import Image from 'next/image'
 import { apiClient } from '@/lib/apiClient'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Upload, FileText, Shield, Calendar, CheckCircle, X, Trash2, Download, Loader2, AlertCircle, Eye, ArrowLeft, GraduationCap, Plus, Edit, Save, LogOut } from 'lucide-react'
+import { useToast } from '@/hooks/useToast'
+import { getErrorMessage } from '@/lib/errorMessages'
 
 interface FileUpload {
   id: string
@@ -38,8 +40,7 @@ export default function AdminUploadPage() {
   const [loading, setLoading] = useState(true)
   const [uploading, setUploading] = useState<string | null>(null)
   const [uploadProgress, setUploadProgress] = useState<Record<string, number>>({})
-  const [error, setError] = useState<string | null>(null)
-  const [success, setSuccess] = useState<string | null>(null)
+  const { toast } = useToast()
 
   const uploadCategories = useMemo(() => [
     {
@@ -138,8 +139,11 @@ export default function AdminUploadPage() {
 
   const handleFileSelect = (assistantId: string, file: File | null) => {
     if (file && file.type !== 'application/pdf') {
-      setError('Only PDF files are allowed')
-      setTimeout(() => setError(null), 3000)
+      toast({
+        variant: "destructive",
+        title: "Invalid File Type",
+        description: "Only PDF files are allowed",
+      })
       return
     }
 
@@ -147,7 +151,6 @@ export default function AdminUploadPage() {
       ...prev,
       [assistantId]: file
     }))
-    setError(null)
   }
 
   const handleUpload = async (assistantId: string) => {
@@ -156,8 +159,6 @@ export default function AdminUploadPage() {
 
     setUploading(assistantId)
     setUploadProgress(prev => ({ ...prev, [assistantId]: 0 }))
-    setError(null)
-    setSuccess(null)
 
     try {
       // Simulate upload progress (in real implementation, this would come from the upload)
@@ -178,11 +179,17 @@ export default function AdminUploadPage() {
       setUploadProgress(prev => ({ ...prev, [assistantId]: 100 }))
 
       if (response.error) {
-        setError(response.error)
-        setTimeout(() => setError(null), 5000)
+        toast({
+          variant: "destructive",
+          title: "Operation Failed",
+          description: getErrorMessage(response.error),
+        })
       } else {
-        setSuccess(`File "${file.name}" uploaded successfully!`)
-        setTimeout(() => setSuccess(null), 3000)
+        toast({
+          variant: "success",
+          title: "Upload Successful",
+          description: `File "${file.name}" uploaded successfully!`,
+        })
 
         // Clear selected file
         setSelectedFiles(prev => ({ ...prev, [assistantId]: null }))
@@ -197,8 +204,11 @@ export default function AdminUploadPage() {
         }
       }
     } catch (err: any) {
-      setError(err.message || 'Upload failed')
-      setTimeout(() => setError(null), 5000)
+      toast({
+        variant: "destructive",
+        title: "Upload Failed",
+        description: getErrorMessage(err),
+      })
     } finally {
       setUploading(null)
       setTimeout(() => {
@@ -218,11 +228,17 @@ export default function AdminUploadPage() {
       const response = await apiClient.deleteFile(assistantId, fileName)
 
       if (response.error) {
-        setError(response.error)
-        setTimeout(() => setError(null), 5000)
+        toast({
+          variant: "destructive",
+          title: "Operation Failed",
+          description: getErrorMessage(response.error),
+        })
       } else {
-        setSuccess(`File "${fileName}" deleted successfully!`)
-        setTimeout(() => setSuccess(null), 3000)
+        toast({
+          variant: "success",
+          title: "Delete Successful",
+          description: `File "${fileName}" deleted successfully!`,
+        })
 
         // Reload files
         const filesResponse = await apiClient.getFiles(assistantId)
@@ -234,8 +250,11 @@ export default function AdminUploadPage() {
         }
       }
     } catch (err: any) {
-      setError(err.message || 'Delete failed')
-      setTimeout(() => setError(null), 5000)
+      toast({
+        variant: "destructive",
+        title: "Delete Failed",
+        description: getErrorMessage(err),
+      })
     }
   }
 
@@ -300,7 +319,11 @@ export default function AdminUploadPage() {
       }
     } catch (err) {
       console.error('Failed to load courses:', err)
-      setError('Failed to load courses')
+      toast({
+        variant: "destructive",
+        title: "Failed to Load",
+        description: "Failed to load courses",
+      })
     } finally {
       setLoadingCourses(false)
     }
@@ -308,26 +331,40 @@ export default function AdminUploadPage() {
 
   const handleCreateCourse = async () => {
     if (!newCourse.code.trim() || !newCourse.name.trim()) {
-      setError(t('course.codeRequired') + ' & ' + t('course.nameRequired'))
+      toast({
+        variant: "destructive",
+        title: "Validation Error",
+        description: t('course.codeRequired') + ' & ' + t('course.nameRequired'),
+      })
       return
     }
 
     setCreatingCourse(true)
-    setError(null)
-    setSuccess(null)
 
     try {
       const response = await apiClient.createCourse(newCourse.code.trim(), newCourse.name.trim(), newCourse.description.trim() || undefined)
       if (response.error) {
-        setError(response.error || 'Failed to create course')
+        toast({
+          variant: "destructive",
+          title: "Failed to Create Course",
+          description: getErrorMessage(response.error || 'Failed to create course'),
+        })
       } else {
-        setSuccess(t('course.courseCreated'))
+        toast({
+          variant: "success",
+          title: "Course Created",
+          description: t('course.courseCreated'),
+        })
         setNewCourse({ code: '', name: '', description: '' })
         setShowCreateCourse(false)
         await loadCourses()
       }
     } catch (err: any) {
-      setError(err.message || 'Failed to create course')
+      toast({
+        variant: "destructive",
+        title: "Failed to Create Course",
+        description: getErrorMessage(err),
+      })
     } finally {
       setCreatingCourse(false)
     }
@@ -340,9 +377,17 @@ export default function AdminUploadPage() {
     try {
       const response = await apiClient.updateCourse(courseId, editData.code, editData.name, editData.description || undefined)
       if (response.error) {
-        setError(response.error)
+        toast({
+          variant: "destructive",
+          title: "Operation Failed",
+          description: getErrorMessage(response.error),
+        })
       } else {
-        setSuccess(t('course.courseUpdated'))
+        toast({
+          variant: "success",
+          title: "Course Updated",
+          description: t('course.courseUpdated'),
+        })
         setEditingCourse(null)
         setEditingCourseData(prev => {
           const updated = { ...prev }
@@ -352,7 +397,11 @@ export default function AdminUploadPage() {
         await loadCourses()
       }
     } catch (err: any) {
-      setError(err.message || 'Failed to update course')
+      toast({
+        variant: "destructive",
+        title: "Failed to Update Course",
+        description: getErrorMessage(err),
+      })
     }
   }
 
@@ -362,13 +411,25 @@ export default function AdminUploadPage() {
     try {
       const response = await apiClient.deleteCourse(courseId)
       if (response.error) {
-        setError(response.error)
+        toast({
+          variant: "destructive",
+          title: "Operation Failed",
+          description: getErrorMessage(response.error),
+        })
       } else {
-        setSuccess(t('course.courseDeleted'))
+        toast({
+          variant: "success",
+          title: "Course Deleted",
+          description: t('course.courseDeleted'),
+        })
         await loadCourses()
       }
     } catch (err: any) {
-      setError(err.message || 'Failed to delete course')
+      toast({
+        variant: "destructive",
+        title: "Failed to Delete Course",
+        description: getErrorMessage(err),
+      })
     }
   }
 
@@ -396,7 +457,11 @@ export default function AdminUploadPage() {
 
   const handleCourseFileSelect = (courseId: string, file: File | null) => {
     if (file && file.type !== 'application/pdf') {
-      setError('Only PDF files are allowed')
+      toast({
+        variant: "destructive",
+        title: "Invalid File Type",
+        description: "Only PDF files are allowed",
+      })
       return
     }
     setSelectedCourseFiles(prev => ({ ...prev, [courseId]: file }))
@@ -404,7 +469,11 @@ export default function AdminUploadPage() {
 
   const handleBehaviorFileSelect = (courseId: string, file: File | null) => {
     if (file && file.type !== 'application/pdf') {
-      setError('Only PDF files are allowed')
+      toast({
+        variant: "destructive",
+        title: "Invalid File Type",
+        description: "Only PDF files are allowed",
+      })
       return
     }
     setSelectedBehaviorFiles(prev => ({ ...prev, [courseId]: file }))
@@ -418,14 +487,26 @@ export default function AdminUploadPage() {
     try {
       const response = await apiClient.uploadCourseFile(courseId, file, 'content')
       if (response.error) {
-        setError(response.error)
+        toast({
+          variant: "destructive",
+          title: "Operation Failed",
+          description: getErrorMessage(response.error),
+        })
       } else {
-        setSuccess(`Course content file "${file.name}" uploaded successfully!`)
+        toast({
+          variant: "success",
+          title: "Upload Successful",
+          description: `Course content file "${file.name}" uploaded successfully!`,
+        })
         setSelectedCourseFiles(prev => ({ ...prev, [courseId]: null }))
         await loadCourseFiles(courseId)
       }
     } catch (err: any) {
-      setError(err.message || 'Failed to upload file')
+      toast({
+        variant: "destructive",
+        title: "Upload Failed",
+        description: getErrorMessage(err),
+      })
     } finally {
       setUploadingCourseFile(null)
     }
@@ -439,14 +520,26 @@ export default function AdminUploadPage() {
     try {
       const response = await apiClient.uploadCourseFile(courseId, file, 'behavior')
       if (response.error) {
-        setError(response.error)
+        toast({
+          variant: "destructive",
+          title: "Operation Failed",
+          description: getErrorMessage(response.error),
+        })
       } else {
-        setSuccess(`Behavior PDF "${file.name}" uploaded successfully!`)
+        toast({
+          variant: "success",
+          title: "Upload Successful",
+          description: `Behavior PDF "${file.name}" uploaded successfully!`,
+        })
         setSelectedBehaviorFiles(prev => ({ ...prev, [courseId]: null }))
         await loadCourseFiles(courseId)
       }
     } catch (err: any) {
-      setError(err.message || 'Failed to upload file')
+      toast({
+        variant: "destructive",
+        title: "Upload Failed",
+        description: getErrorMessage(err),
+      })
     } finally {
       setUploadingBehaviorFile(null)
     }
@@ -458,13 +551,25 @@ export default function AdminUploadPage() {
     try {
       const response = await apiClient.deleteCourseFile(courseId, fileName)
       if (response.error) {
-        setError(response.error)
+        toast({
+          variant: "destructive",
+          title: "Operation Failed",
+          description: getErrorMessage(response.error),
+        })
       } else {
-        setSuccess('File deleted successfully!')
+        toast({
+          variant: "success",
+          title: "Delete Successful",
+          description: 'File deleted successfully!',
+        })
         await loadCourseFiles(courseId)
       }
     } catch (err: any) {
-      setError(err.message || 'Failed to delete file')
+      toast({
+        variant: "destructive",
+        title: "Delete Failed",
+        description: getErrorMessage(err),
+      })
     }
   }
 
@@ -569,49 +674,6 @@ export default function AdminUploadPage() {
           </div>
         </div>
 
-        {/* Success/Error Messages */}
-        <AnimatePresence>
-          {success && (
-            <motion.div
-              key="success-message"
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              className={`mb-4 p-4 bg-green-500/20 border border-green-500 rounded-lg flex items-center gap-3 ${isRTL ? 'flex-row-reverse' : ''}`}
-            >
-              <CheckCircle className="h-5 w-5 text-green-400 flex-shrink-0" />
-              <p className="text-green-200 flex-1">{success}</p>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setSuccess(null)}
-                className={`${isRTL ? 'mr-auto' : 'ml-auto'} text-green-200 hover:text-green-100`}
-              >
-                <X className="h-4 w-4" />
-              </Button>
-            </motion.div>
-          )}
-          {error && (
-            <motion.div
-              key="error-message"
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              className={`mb-4 p-4 bg-red-500/20 border border-red-500 rounded-lg flex items-center gap-3 ${isRTL ? 'flex-row-reverse' : ''}`}
-            >
-              <AlertCircle className="h-5 w-5 text-red-400 flex-shrink-0" />
-              <p className="text-red-200 flex-1">{error}</p>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setError(null)}
-                className={`${isRTL ? 'mr-auto' : 'ml-auto'} text-red-200 hover:text-red-100`}
-              >
-                <X className="h-4 w-4" />
-              </Button>
-            </motion.div>
-          )}
-        </AnimatePresence>
 
         {/* Upload Sections */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -790,10 +852,18 @@ export default function AdminUploadPage() {
                                         // Clean up blob URL after a delay
                                         setTimeout(() => URL.revokeObjectURL(blobUrl), 1000)
                                       } else {
-                                        setError('Failed to open file')
+                                        toast({
+                                        variant: "destructive",
+                                        title: "Failed to Open",
+                                        description: "Failed to open file",
+                                      })
                                       }
                                     } catch (err) {
-                                      setError('Failed to open file')
+                                      toast({
+                                        variant: "destructive",
+                                        title: "Failed to Open",
+                                        description: "Failed to open file",
+                                      })
                                     }
                                   }}
                                   className="h-8 w-8 p-0"
@@ -1218,10 +1288,18 @@ export default function AdminUploadPage() {
                                             // Clean up blob URL after a delay
                                             setTimeout(() => URL.revokeObjectURL(blobUrl), 1000)
                                           } else {
-                                            setError('Failed to open file')
+                                            toast({
+                                        variant: "destructive",
+                                        title: "Failed to Open",
+                                        description: "Failed to open file",
+                                      })
                                           }
                                         } catch (err) {
-                                          setError('Failed to open file')
+                                          toast({
+                                        variant: "destructive",
+                                        title: "Failed to Open",
+                                        description: "Failed to open file",
+                                      })
                                         }
                                       }}
                                       className="h-7 w-7 p-0"
