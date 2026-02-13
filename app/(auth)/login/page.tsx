@@ -33,15 +33,16 @@ export default function LoginPage() {
     setLoading(true)
 
     // Check if email is from Kuwait University
-    if (!isKuwaitUniversityEmail(email)) {
-      toast({
-        variant: "destructive",
-        title: "Access Restricted",
-        description: t('auth.domainRestriction'),
-      })
-      setLoading(false)
-      return
-    }
+    // TEMPORARILY COMMENTED OUT - Allow all emails for testing
+    // if (!isKuwaitUniversityEmail(email)) {
+    //   toast({
+    //     variant: "destructive",
+    //     title: "Access Restricted",
+    //     description: t('auth.domainRestriction'),
+    //   })
+    //   setLoading(false)
+    //   return
+    // }
 
     try {
       const { data, error } = await signIn(email, password)

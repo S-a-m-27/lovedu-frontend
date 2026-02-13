@@ -80,15 +80,16 @@ export default function SignupPage() {
     }
 
     // Check if email is from Kuwait University
-    if (!isKuwaitUniversityEmail(email)) {
-      toast({
-        variant: "destructive",
-        title: "Access Restricted",
-        description: t('auth.domainRestriction'),
-      })
-      setLoading(false)
-      return
-    }
+    // TEMPORARILY COMMENTED OUT - Allow all emails for testing
+    // if (!isKuwaitUniversityEmail(email)) {
+    //   toast({
+    //     variant: "destructive",
+    //     title: "Access Restricted",
+    //     description: t('auth.domainRestriction'),
+    //   })
+    //   setLoading(false)
+    //   return
+    // }
 
     try {
       const { data, error } = await signUp(email, password, {
