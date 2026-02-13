@@ -11,7 +11,6 @@ export function isValidEmail(email: string): boolean {
 }
 
 export function isKuwaitUniversityEmail(email: string): boolean {
-  const allowedDomains = ['@ku.edu.kw', '@grad.edu.kw', '@grade.edu.kw']
-  return allowedDomains.some(domain => email.endsWith(domain))
+  return email.endsWith('@grad.ku.edu.kw')
 }
 

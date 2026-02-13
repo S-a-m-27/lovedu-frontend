@@ -155,7 +155,7 @@ export default function SignupPage() {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="user@ku.edu.kw"
+                  placeholder="user@grad.ku.edu.kw"
                   required
                   className="w-full"
                 />
