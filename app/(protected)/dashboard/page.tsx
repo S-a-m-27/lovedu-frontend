@@ -111,16 +111,16 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#001f3f] p-8">
+    <div className="min-h-screen bg-[#001f3f] p-4 sm:p-6 md:p-8">
       <div className="max-w-3xl mx-auto">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mb-8"
+          className="mb-6 sm:mb-8"
         >
-          <h1 className="text-4xl font-bold text-white mb-2">My Profile</h1>
-          <p className="text-gray-300">Your personal information</p>
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-2">My Profile</h1>
+          <p className="text-sm sm:text-base text-gray-300">Your personal information</p>
         </motion.div>
 
         {/* Profile Card */}
@@ -139,18 +139,18 @@ export default function ProfilePage() {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="flex items-center gap-3 p-3 bg-[#001f3f] rounded-lg">
-                <Mail className="h-5 w-5 text-gray-400" />
-                <div className="flex-1">
-                  <p className="text-sm text-gray-400">Email</p>
-                  <p className="text-white font-medium">{currentUser?.email || 'N/A'}</p>
+              <div className="flex items-center gap-2 sm:gap-3 p-3 bg-[#001f3f] rounded-lg">
+                <Mail className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400 flex-shrink-0" />
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs sm:text-sm text-gray-400">Email</p>
+                  <p className="text-sm sm:text-base text-white font-medium break-words">{currentUser?.email || 'N/A'}</p>
                 </div>
               </div>
 
-              <div className="flex items-center gap-3 p-3 bg-[#001f3f] rounded-lg">
-                <User className="h-5 w-5 text-gray-400" />
-                <div className="flex-1">
-                  <p className="text-sm text-gray-400 mb-1">Full Name</p>
+              <div className="flex items-center gap-2 sm:gap-3 p-3 bg-[#001f3f] rounded-lg">
+                <User className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400 flex-shrink-0" />
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs sm:text-sm text-gray-400 mb-1">Full Name</p>
                   {isEditing ? (
                     <Input
                       value={editFullName}
@@ -164,10 +164,10 @@ export default function ProfilePage() {
                 </div>
               </div>
 
-              <div className="flex items-center gap-3 p-3 bg-[#001f3f] rounded-lg">
-                <Calendar className="h-5 w-5 text-gray-400" />
-                <div className="flex-1">
-                  <p className="text-sm text-gray-400 mb-1">Date of Birth</p>
+              <div className="flex items-center gap-2 sm:gap-3 p-3 bg-[#001f3f] rounded-lg">
+                <Calendar className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400 flex-shrink-0" />
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs sm:text-sm text-gray-400 mb-1">Date of Birth</p>
                   {isEditing ? (
                     <Input
                       type="date"

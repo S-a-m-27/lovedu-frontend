@@ -602,7 +602,7 @@ export default function AdminUploadPage() {
         <Card className="shadow-xl max-w-md">
           <CardHeader className="text-center">
             <Shield className="h-12 w-12 text-red-500 mx-auto mb-4" />
-            <CardTitle className="text-2xl font-bold text-red-600">
+            <CardTitle className="text-xl sm:text-2xl font-bold text-red-600">
               Access Denied
             </CardTitle>
             <CardDescription>
@@ -621,37 +621,37 @@ export default function AdminUploadPage() {
   }
 
   return (
-    <div className={`min-h-screen bg-[#001f3f] p-4 ${isRTL ? 'font-arabic' : ''}`}>
+    <div className={`min-h-screen bg-[#001f3f] p-3 sm:p-4 md:p-6 ${isRTL ? 'font-arabic' : ''}`}>
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="mb-10">
+        <div className="mb-6 sm:mb-8 md:mb-10">
           {/* Top Row: Logout Button and Language Switcher */}
-          <div className={`flex justify-between items-center mb-6 ${isRTL ? 'flex-row-reverse' : ''}`}>
+          <div className={`flex justify-between items-center mb-4 sm:mb-6 gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
             <Button
               variant="ghost"
               onClick={async () => {
                 await signOut()
                 router.push('/login')
               }}
-              className="text-white hover:bg-[#003366] flex-shrink-0"
+              className="text-white hover:bg-[#003366] flex-shrink-0 text-xs sm:text-sm"
             >
-              <LogOut className={`h-4 w-4 ${isRTL ? 'ml-2' : 'mr-2'}`} />
-              {t('common.logout')}
+              <LogOut className={`h-3 w-3 sm:h-4 sm:w-4 ${isRTL ? 'ml-1 sm:ml-2' : 'mr-1 sm:mr-2'}`} />
+              <span className="hidden sm:inline">{t('common.logout')}</span>
             </Button>
-            <div className={`flex items-center gap-4 ${isRTL ? 'flex-row-reverse' : ''}`}>
+            <div className={`flex items-center gap-2 sm:gap-4 ${isRTL ? 'flex-row-reverse' : ''}`}>
               <LanguageSwitcher />
               <ThemeToggle />
             </div>
           </div>
 
           {/* Logo Row - Centered */}
-          <div className="flex justify-center mb-6">
-            <div className="relative w-96 h-36">
+          <div className="flex justify-center mb-4 sm:mb-6">
+            <div className="relative w-full max-w-[280px] sm:max-w-[320px] md:w-96 h-24 sm:h-28 md:h-36">
               <Image
                 src={adminSrc}
                 alt="LovEdu Admin Logo"
                 fill
-                sizes="384px"
+                sizes="(max-width: 640px) 100vw, (max-width: 768px) 320px, 384px"
                 className="object-contain"
                 priority
                 unoptimized
@@ -665,10 +665,10 @@ export default function AdminUploadPage() {
 
           {/* Title and Subtitle */}
           <div className={`${isRTL ? 'text-right' : 'text-left'}`}>
-            <h2 className={`text-3xl font-bold text-white mb-3 ${isRTL ? 'text-right' : 'text-left'}`}>
+            <h2 className={`text-xl sm:text-2xl md:text-3xl font-bold text-white mb-2 sm:mb-3 ${isRTL ? 'text-right' : 'text-left'}`}>
               {t('admin.title')}
             </h2>
-            <p className={`text-gray-300 ${isRTL ? 'text-right' : 'text-left'}`}>
+            <p className={`text-sm sm:text-base text-gray-300 ${isRTL ? 'text-right' : 'text-left'}`}>
               {t('admin.subtitle')}
             </p>
           </div>
@@ -676,7 +676,7 @@ export default function AdminUploadPage() {
 
 
         {/* Upload Sections */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {uploadCategories.map((category, index) => {
             const Icon = category.icon
             const isUploading = uploading === category.id
@@ -699,8 +699,8 @@ export default function AdminUploadPage() {
                         <Icon className="h-6 w-6 text-white" />
                       </div>
                       <div className={`flex-1 min-w-0 ${isRTL ? 'text-right' : 'text-left'}`}>
-                        <CardTitle className={`text-xl ${isRTL ? 'text-right' : 'text-left'}`}>{t(category.nameKey)}</CardTitle>
-                        <CardDescription className={`${isRTL ? 'text-right' : 'text-left'}`}>
+                        <CardTitle className={`text-base sm:text-lg md:text-xl ${isRTL ? 'text-right' : 'text-left'}`}>{t(category.nameKey)}</CardTitle>
+                        <CardDescription className={`text-xs sm:text-sm ${isRTL ? 'text-right' : 'text-left'}`}>
                           {files.length} {t('common.filesUploaded')}
                         </CardDescription>
                         {files.length > 0 && (
@@ -725,7 +725,7 @@ export default function AdminUploadPage() {
                   <CardContent className="space-y-4 flex-1 flex flex-col">
                     {/* File Input */}
                     <div className="space-y-2">
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                      <label className="block text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300">
                         {t('common.selectPDF')}
                       </label>
                       <div className="flex flex-col gap-2">
@@ -819,11 +819,11 @@ export default function AdminUploadPage() {
                               <div className="flex-1 min-w-0">
                                 <div className={`flex items-center gap-2 mb-1 ${isRTL ? 'flex-row-reverse' : ''}`}>
                                   <FileText className="h-4 w-4 text-gray-500 flex-shrink-0" />
-                                  <p className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
+                                  <p className="text-xs sm:text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
                                     {file.file_name}
                                   </p>
                                 </div>
-                                <div className={`flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400 ${isRTL ? 'flex-row-reverse' : ''}`}>
+                                <div className={`flex items-center gap-2 sm:gap-4 text-xs text-gray-500 dark:text-gray-400 ${isRTL ? 'flex-row-reverse' : ''}`}>
                                   <span>{formatFileSize(file.file_size)}</span>
                                   <span className={`flex items-center gap-1 ${isRTL ? 'flex-row-reverse' : ''}`}>
                                     <Calendar className="h-3 w-3" />
@@ -898,14 +898,14 @@ export default function AdminUploadPage() {
           transition={{ duration: 0.5, delay: 0.7 }}
           className="mt-8"
         >
-          <div className={`flex items-center justify-between mb-4 ${isRTL ? 'flex-row-reverse' : ''}`}>
-            <div className={`flex items-center gap-3 ${isRTL ? 'flex-row-reverse' : ''}`}>
-              <GraduationCap className="h-6 w-6 text-white" />
-              <h2 className="text-2xl font-bold text-white">{t('course.title')}</h2>
+          <div className={`flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 gap-3 sm:gap-0 ${isRTL ? 'sm:flex-row-reverse' : ''}`}>
+            <div className={`flex items-center gap-2 sm:gap-3 ${isRTL ? 'flex-row-reverse' : ''}`}>
+              <GraduationCap className="h-5 w-5 sm:h-6 sm:w-6 text-white flex-shrink-0" />
+              <h2 className="text-xl sm:text-2xl font-bold text-white">{t('course.title')}</h2>
             </div>
             <Button
               onClick={() => setShowCreateCourse(!showCreateCourse)}
-              className="bg-[#dc2626] hover:bg-[#b91c1c] text-white"
+              className="bg-[#dc2626] hover:bg-[#b91c1c] text-white text-sm sm:text-base w-full sm:w-auto"
             >
               <Plus className={`h-4 w-4 ${isRTL ? 'ml-2' : 'mr-2'}`} />
               {showCreateCourse ? t('common.cancel') : t('course.create')}
@@ -922,8 +922,8 @@ export default function AdminUploadPage() {
             >
               <Card className="bg-[#003366] border-[#004080]">
                 <CardHeader>
-                  <CardTitle className={`text-white ${isRTL ? 'text-right' : 'text-left'}`}>{t('course.createNew')}</CardTitle>
-                  <CardDescription className={`text-gray-300 ${isRTL ? 'text-right' : 'text-left'}`}>
+                  <CardTitle className={`text-white text-base sm:text-lg ${isRTL ? 'text-right' : 'text-left'}`}>{t('course.createNew')}</CardTitle>
+                  <CardDescription className={`text-gray-300 text-xs sm:text-sm ${isRTL ? 'text-right' : 'text-left'}`}>
                     {t('course.descriptionHint')}
                   </CardDescription>
                 </CardHeader>
@@ -991,7 +991,7 @@ export default function AdminUploadPage() {
               </CardContent>
             </Card>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
               {courses.map((course, index) => (
                 <motion.div
                   key={course.id}
@@ -1003,7 +1003,7 @@ export default function AdminUploadPage() {
                     <CardHeader>
                       <div className={`flex items-start justify-between ${isRTL ? 'flex-row-reverse' : ''}`}>
                         <div className={`flex-1 min-w-0 ${isRTL ? 'text-right' : 'text-left'}`}>
-                          <CardTitle className={`text-white text-lg mb-1 ${isRTL ? 'text-right' : 'text-left'}`}>
+                          <CardTitle className={`text-white text-base sm:text-lg mb-1 ${isRTL ? 'text-right' : 'text-left'}`}>
                             {editingCourse === course.id ? (
                               <input
                                 type="text"
@@ -1012,7 +1012,7 @@ export default function AdminUploadPage() {
                                   ...prev,
                                   [course.id]: { ...prev[course.id], name: e.target.value, code: prev[course.id]?.code || course.code, description: prev[course.id]?.description || course.description || '' }
                                 }))}
-                                className={`w-full px-2 py-1 bg-[#001f3f] border border-[#004080] rounded text-white text-lg font-semibold ${isRTL ? 'text-right' : 'text-left'}`}
+                                className={`w-full px-2 py-1 bg-[#001f3f] border border-[#004080] rounded text-white text-base sm:text-lg font-semibold ${isRTL ? 'text-right' : 'text-left'}`}
                               />
                             ) : (
                               course.name
@@ -1110,7 +1110,7 @@ export default function AdminUploadPage() {
                         </div>
                       </div>
                       {course.description && (
-                        <p className={`text-sm text-gray-400 mt-2 ${isRTL ? 'text-right' : 'text-left'}`}>
+                        <p className={`text-xs sm:text-sm text-gray-400 mt-2 ${isRTL ? 'text-right' : 'text-left'}`}>
                           {editingCourse === course.id ? (
                             <textarea
                               value={editingCourseData[course.id]?.description || ''}
@@ -1130,10 +1130,10 @@ export default function AdminUploadPage() {
                     <CardContent className="flex-1 flex flex-col">
                       {/* Behavior PDF Upload Section */}
                       <div className="space-y-3 mb-4 pb-4 border-b border-[#004080]">
-                        <label className="block text-sm font-medium text-blue-300 mb-2">
+                        <label className="block text-xs sm:text-sm font-medium text-blue-300 mb-2">
                           📋 {t('course.uploadBehaviorPDF') || 'Upload Behavior PDF'}
                         </label>
-                        <p className="text-xs text-gray-400 mb-2">
+                        <p className="text-[10px] sm:text-xs text-gray-400 mb-2">
                           {t('course.behaviorPDFDescription') || 'PDFs that define agent behavior, rules, and guidelines'}
                         </p>
                         <div>
@@ -1146,17 +1146,17 @@ export default function AdminUploadPage() {
                           />
                           <label
                             htmlFor={`behavior-file-${course.id}`}
-                            className={`flex items-center justify-center gap-2 px-4 py-2 rounded-lg cursor-pointer transition-colors duration-200 ${uploadingBehaviorFile === course.id
+                            className={`flex items-center justify-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg cursor-pointer transition-colors duration-200 text-xs sm:text-sm ${uploadingBehaviorFile === course.id
                               ? 'bg-gray-400 cursor-not-allowed'
                               : 'bg-blue-600 hover:bg-blue-700 text-white'
                               }`}
                           >
-                            <Upload className="h-4 w-4" />
+                            <Upload className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                             {selectedBehaviorFiles[course.id] ? (t('course.changeFile') || 'Change File') : (t('course.choosePDF') || 'Choose Behavior PDF')}
                           </label>
                           {selectedBehaviorFiles[course.id] && (
-                            <div className={`flex items-center gap-2 text-sm text-green-400 p-2 bg-green-900/20 rounded mt-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
-                              <CheckCircle className="h-4 w-4 flex-shrink-0" />
+                            <div className={`flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm text-green-400 p-1.5 sm:p-2 bg-green-900/20 rounded mt-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
+                              <CheckCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4 flex-shrink-0" />
                               <span className="truncate flex-1">{selectedBehaviorFiles[course.id]!.name}</span>
                             </div>
                           )}
@@ -1205,17 +1205,17 @@ export default function AdminUploadPage() {
                           />
                           <label
                             htmlFor={`course-file-${course.id}`}
-                            className={`flex items-center justify-center gap-2 px-4 py-2 rounded-lg cursor-pointer transition-colors duration-200 ${uploadingCourseFile === course.id
+                            className={`flex items-center justify-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg cursor-pointer transition-colors duration-200 text-xs sm:text-sm ${uploadingCourseFile === course.id
                               ? 'bg-gray-400 cursor-not-allowed'
                               : 'bg-[#dc2626] hover:bg-[#b91c1c] text-white'
                               }`}
                           >
-                            <Upload className="h-4 w-4" />
+                            <Upload className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                             {selectedCourseFiles[course.id] ? t('course.changeFile') : (t('course.choosePDF') || 'Choose Content PDF')}
                           </label>
                           {selectedCourseFiles[course.id] && (
-                            <div className={`flex items-center gap-2 text-sm text-green-400 p-2 bg-green-900/20 rounded mt-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
-                              <CheckCircle className="h-4 w-4 flex-shrink-0" />
+                            <div className={`flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm text-green-400 p-1.5 sm:p-2 bg-green-900/20 rounded mt-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
+                              <CheckCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4 flex-shrink-0" />
                               <span className="truncate flex-1">{selectedCourseFiles[course.id]!.name}</span>
                             </div>
                           )}
@@ -1261,13 +1261,13 @@ export default function AdminUploadPage() {
                               {courseFiles[course.id].map((file, idx) => (
                                 <div
                                   key={file.id || `course-content-${course.id}-${idx}-${file.file_name}`}
-                                  className={`p-2 bg-[#001f3f] rounded-lg flex items-start justify-between gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}
+                                  className={`p-2 sm:p-2.5 bg-[#001f3f] rounded-lg flex items-start justify-between gap-1.5 sm:gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}
                                 >
                                   <div className="flex-1 min-w-0">
-                                    <p className="text-sm font-medium text-white truncate">{file.file_name}</p>
-                                    <p className="text-xs text-gray-400">{formatFileSize(file.file_size)}</p>
+                                    <p className="text-xs sm:text-sm font-medium text-white truncate">{file.file_name}</p>
+                                    <p className="text-[10px] sm:text-xs text-gray-400">{formatFileSize(file.file_size)}</p>
                                   </div>
-                                  <div className={`flex gap-1 ${isRTL ? 'flex-row-reverse' : ''}`}>
+                                  <div className={`flex gap-0.5 sm:gap-1 ${isRTL ? 'flex-row-reverse' : ''}`}>
                                     <Button
                                       size="sm"
                                       variant="ghost"
@@ -1339,10 +1339,10 @@ export default function AdminUploadPage() {
           <div className={`flex items-start gap-3 ${isRTL ? 'flex-row-reverse' : ''}`}>
             <Shield className="h-6 w-6 text-white mt-1 flex-shrink-0" />
             <div className={`flex-1 ${isRTL ? 'text-right' : 'text-left'}`}>
-              <h3 className={`font-semibold text-white mb-2 text-lg ${isRTL ? 'text-right' : 'text-left'}`}>
+              <h3 className={`font-semibold text-white mb-2 text-base sm:text-lg ${isRTL ? 'text-right' : 'text-left'}`}>
                 {t('admin.uploadGuidelines')}
               </h3>
-              <ul className={`text-sm text-gray-300 space-y-1 ${isRTL ? 'text-right' : 'text-left'}`}>
+              <ul className={`text-xs sm:text-sm text-gray-300 space-y-1 ${isRTL ? 'text-right' : 'text-left'}`}>
                 {(t('admin.guidelines') as unknown as string[])?.map((guideline: string, index: number) => (
                   <li key={index} className={isRTL ? 'text-right' : 'text-left'}>• {guideline}</li>
                 ))}

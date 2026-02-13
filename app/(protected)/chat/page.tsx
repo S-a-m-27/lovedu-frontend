@@ -509,11 +509,11 @@ export default function ChatPage() {
                 {mobileSidebarOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
               </Button>
 
-            <div>
-                <h2 className="text-base md:text-lg font-semibold text-white leading-tight">
+            <div className="min-w-0 flex-1">
+                <h2 className="text-sm sm:text-base md:text-lg font-semibold text-white leading-tight truncate">
                   {currentCourseName || getAssistantName(selectedAssistant)}
               </h2>
-                <p className="text-xs md:text-sm text-gray-400 mt-0.5">
+                <p className="text-[10px] sm:text-xs md:text-sm text-gray-400 mt-0.5">
                   {t('common.kuniv')}
               </p>
               </div>
@@ -573,22 +573,22 @@ export default function ChatPage() {
               onClick={() => scrollToBottom('smooth')}
               className={[
                 'fixed z-30',
-                'bottom-[118px] md:bottom-[132px]',
-                isRTL ? 'left-5' : 'right-5',
-                'h-10 w-10 rounded-full border border-white/10 bg-[#071225]/80 backdrop-blur-md hover:bg-white/5 transition-colors flex items-center justify-center shadow-sm'
+                'bottom-[100px] sm:bottom-[118px] md:bottom-[132px]',
+                isRTL ? 'left-3 sm:left-5' : 'right-3 sm:right-5',
+                'h-9 w-9 sm:h-10 sm:w-10 rounded-full border border-white/10 bg-[#071225]/80 backdrop-blur-md hover:bg-white/5 transition-colors flex items-center justify-center shadow-sm'
               ].join(' ')}
               aria-label="Scroll to bottom"
             >
-              <ChevronDown className="h-5 w-5 text-gray-200" />
+              <ChevronDown className="h-4 w-4 sm:h-5 sm:w-5 text-gray-200" />
             </button>
           )}
         </div>
 
         {/* Input Area */}
         <div className="sticky bottom-0 z-20 border-t border-white/10 bg-[#071225]/80 backdrop-blur-md">
-          <div className="px-4 md:px-6 py-4">
+          <div className="px-3 sm:px-4 md:px-6 py-3 sm:py-4">
             <div className="max-w-3xl lg:max-w-4xl xl:max-w-5xl mx-auto w-full">
-              <div className="flex items-end gap-3 rounded-2xl border border-white/10 bg-white/[0.03] px-3 py-2 shadow-sm">
+              <div className="flex items-end gap-2 sm:gap-3 rounded-xl sm:rounded-2xl border border-white/10 bg-white/[0.03] px-2 sm:px-3 py-1.5 sm:py-2 shadow-sm">
                 <textarea
                 value={inputValue}
                   onChange={(e) => {
@@ -599,22 +599,22 @@ export default function ChatPage() {
                 disabled={loading}
                   rows={1}
                   ref={composerRef}
-                  className="flex-1 resize-none bg-transparent text-sm md:text-base text-white placeholder:text-gray-500 focus:outline-none leading-6 max-h-36 py-2"
+                  className="flex-1 resize-none bg-transparent text-xs sm:text-sm md:text-base text-white placeholder:text-gray-500 focus:outline-none leading-6 max-h-32 sm:max-h-36 py-1.5 sm:py-2"
               />
               <Button
                 onClick={handleSendMessage}
                 disabled={!inputValue.trim() || loading}
-                  className="h-10 w-10 p-0 rounded-xl bg-white/10 hover:bg-white/15 text-white disabled:opacity-50"
+                  className="h-8 w-8 sm:h-10 sm:w-10 p-0 rounded-lg sm:rounded-xl bg-white/10 hover:bg-white/15 text-white disabled:opacity-50 flex-shrink-0"
                   aria-label="Send message"
               >
                 {loading ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <Loader2 className="h-3.5 w-3.5 sm:h-4 sm:w-4 animate-spin" />
                 ) : (
-                  <Send className="h-4 w-4" />
+                  <Send className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                 )}
               </Button>
               </div>
-              <p className="mt-2 text-[11px] text-gray-500">
+              <p className="mt-1.5 sm:mt-2 text-[10px] sm:text-[11px] text-gray-500">
                 {t('chat.composer.hint')}
               </p>
             </div>

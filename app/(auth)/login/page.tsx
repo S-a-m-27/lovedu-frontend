@@ -95,13 +95,13 @@ export default function LoginPage() {
             <div className="flex justify-between items-center mb-4">
               <LanguageSwitcher />
             </div>
-            <div className="flex justify-center my-6">
-              <div className="relative w-80 h-28">
+            <div className="flex justify-center my-4 sm:my-6">
+              <div className="relative w-full max-w-[320px] sm:w-80 h-20 sm:h-28">
                 <Image
                   src={signinSrc}
                   alt="LovEdu Sign In Logo"
                   fill
-                  sizes="256px"
+                  sizes="(max-width: 640px) 100vw, 320px"
                   className="object-contain"
                   priority
                   unoptimized
@@ -112,7 +112,7 @@ export default function LoginPage() {
                 />
               </div>
             </div>
-            <CardTitle className="text-2xl font-bold text-white mt-2">
+            <CardTitle className="text-xl sm:text-2xl font-bold text-white mt-2">
               {t('auth.welcome')}
             </CardTitle>
             <CardDescription>

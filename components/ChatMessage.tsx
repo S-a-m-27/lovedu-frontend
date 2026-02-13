@@ -56,7 +56,7 @@ export const ChatMessage = ({ message }: ChatMessageProps) => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
-      className={`group flex gap-3 md:gap-4 mb-4 md:mb-5 ${
+      className={`group flex gap-2 sm:gap-3 md:gap-4 mb-3 sm:mb-4 md:mb-5 ${
         isUser 
           ? (isRTL ? 'justify-start' : 'justify-end')
           : (isRTL ? 'justify-end' : 'justify-start')
@@ -64,21 +64,21 @@ export const ChatMessage = ({ message }: ChatMessageProps) => {
     >
       {!isUser && (
         <div className="flex-shrink-0">
-          <div className="w-8 h-8 rounded-full bg-white/10 border border-white/10 flex items-center justify-center">
-            <Bot className="h-4 w-4 text-gray-200" />
+          <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white/10 border border-white/10 flex items-center justify-center">
+            <Bot className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-gray-200" />
           </div>
         </div>
       )}
       
-      <div className={`${isUser ? (isRTL ? 'order-last' : 'order-first') : ''} w-full max-w-[85%] md:max-w-[70%]`}>
+      <div className={`${isUser ? (isRTL ? 'order-last' : 'order-first') : ''} w-full max-w-[90%] sm:max-w-[85%] md:max-w-[70%]`}>
         <div
-          className={`rounded-2xl px-4 py-3 border ${
+          className={`rounded-xl sm:rounded-2xl px-3 py-2 sm:px-4 sm:py-3 border ${
             isUser
               ? `bg-white/[0.03] text-white border-[#2563eb]/30 ${isRTL ? 'mr-auto' : 'ml-auto'} shadow-sm ring-1 ring-[#2563eb]/10`
               : 'bg-white/[0.04] text-white border-white/10'
           }`}
         >
-          <div className={`text-sm md:text-base leading-relaxed ${isRTL ? 'text-right' : 'text-left'}`}>
+          <div className={`text-xs sm:text-sm md:text-base leading-relaxed ${isRTL ? 'text-right' : 'text-left'}`}>
             {blocks.map((b, i) => {
               if (b.type === 'code') {
                 return (
@@ -125,8 +125,8 @@ export const ChatMessage = ({ message }: ChatMessageProps) => {
       
       {isUser && (
         <div className="flex-shrink-0">
-          <div className="w-8 h-8 rounded-full bg-white/10 border border-white/10 flex items-center justify-center">
-            <User className="h-4 w-4 text-gray-200" />
+          <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white/10 border border-white/10 flex items-center justify-center">
+            <User className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-gray-200" />
           </div>
         </div>
       )}

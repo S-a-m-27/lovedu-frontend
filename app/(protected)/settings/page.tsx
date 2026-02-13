@@ -99,26 +99,26 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#001f3f] p-8">
+    <div className="min-h-screen bg-[#001f3f] p-4 sm:p-6 md:p-8">
       <div className="max-w-3xl mx-auto">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mb-8"
+          className="mb-6 sm:mb-8"
         >
-          <div className="flex items-center gap-4 mb-4">
+          <div className="flex items-center gap-2 sm:gap-4 mb-4">
             <Button
               variant="ghost"
               onClick={() => router.back()}
-              className="text-gray-300 hover:text-white hover:bg-[#003366]/50"
+              className="text-gray-300 hover:text-white hover:bg-[#003366]/50 text-sm sm:text-base"
             >
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Back
+              <ArrowLeft className="h-4 w-4 mr-1 sm:mr-2" />
+              <span className="hidden sm:inline">Back</span>
             </Button>
           </div>
-          <h1 className="text-4xl font-bold text-white mb-2">Settings</h1>
-          <p className="text-gray-300">Manage your account settings</p>
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-2">Settings</h1>
+          <p className="text-sm sm:text-base text-gray-300">Manage your account settings</p>
         </motion.div>
 
         {/* Profile Section */}
@@ -138,9 +138,9 @@ export default function SettingsPage() {
                   <div className="p-3 bg-[#004080]/30 rounded-lg">
                     <User className="h-6 w-6" />
                   </div>
-                  <div className="text-left">
-                    <h3 className="text-lg font-semibold mb-1">Profile</h3>
-                    <p className="text-sm text-gray-300">View and edit your profile information</p>
+                  <div className="text-left flex-1 min-w-0">
+                    <h3 className="text-base sm:text-lg font-semibold mb-1">Profile</h3>
+                    <p className="text-xs sm:text-sm text-gray-300">View and edit your profile information</p>
                   </div>
                 </div>
                 <ArrowRight className="h-5 w-5 text-gray-400" />
