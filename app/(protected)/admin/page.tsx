@@ -837,8 +837,15 @@ export default function AdminUploadPage() {
                                   size="sm"
                                   onClick={async () => {
                                     try {
-                                      const token = localStorage.getItem('auth_token') ||
-                                        JSON.parse(localStorage.getItem('auth_session') || '{}')?.access_token
+                                      const token = apiClient.getToken()
+                                      if (!token) {
+                                        toast({
+                                          variant: "destructive",
+                                          title: "Authentication Error",
+                                          description: "Please sign in again",
+                                        })
+                                        return
+                                      }
                                       const url = apiClient.getFileDownloadUrl(category.id, file.file_name)
                                       const response = await fetch(url, {
                                         headers: {
@@ -1273,8 +1280,15 @@ export default function AdminUploadPage() {
                                       variant="ghost"
                                       onClick={async () => {
                                         try {
-                                          const token = localStorage.getItem('auth_token') ||
-                                            JSON.parse(localStorage.getItem('auth_session') || '{}')?.access_token
+                                          const token = apiClient.getToken()
+                                          if (!token) {
+                                            toast({
+                                              variant: "destructive",
+                                              title: "Authentication Error",
+                                              description: "Please sign in again",
+                                            })
+                                            return
+                                          }
                                           const url = apiClient.getCourseFileDownloadUrl(course.id, file.file_name)
                                           const response = await fetch(url, {
                                             headers: {

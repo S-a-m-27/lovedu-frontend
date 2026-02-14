@@ -24,16 +24,25 @@ class ApiClient {
       console.log(`📤 API Request: ${options.method || 'GET'} ${endpoint}`, {
         url,
         hasToken: !!token,
+        tokenValid: token ? this.isValidJWT(token) : false,
         tokenPreview: token ? token.substring(0, 20) + '...' : 'none'
       })
 
+      const headers: HeadersInit = {
+        'Content-Type': 'application/json',
+        ...options.headers,
+      }
+
+      // Only add Authorization header if token is valid
+      if (token && this.isValidJWT(token)) {
+        headers['Authorization'] = `Bearer ${token}`
+      } else if (token) {
+        console.warn('⚠️ Skipping Authorization header - invalid token format')
+      }
+
       const response = await fetch(url, {
         ...options,
-        headers: {
-          'Content-Type': 'application/json',
-          ...(token && { Authorization: `Bearer ${token}` }),
-          ...options.headers,
-        },
+        headers,
       })
 
       // Robust response parsing (handles empty / non-JSON responses)
@@ -111,14 +120,36 @@ class ApiClient {
     }
   }
 
+  private isValidJWT(token: string): boolean {
+    if (!token || typeof token !== 'string') return false
+    if (token === 'null' || token === 'undefined' || token.trim() === '') return false
+    
+    // JWT should have exactly 3 parts separated by dots
+    const parts = token.split('.')
+    if (parts.length !== 3) return false
+    
+    // Each part should be non-empty
+    return parts.every(part => part.length > 0)
+  }
+
   getToken(): string | null {
     if (typeof window === 'undefined') return null
     
     // Get token from localStorage
     const token = localStorage.getItem('auth_token')
     if (token) {
-      console.log('🔑 Token retrieved from auth_token:', token.substring(0, 20) + '...')
-      return token
+      // Validate token format (JWT should have 3 parts separated by dots)
+      if (this.isValidJWT(token)) {
+        console.log('🔑 Token retrieved from auth_token:', token.substring(0, 20) + '...')
+        return token
+      } else {
+        console.warn('⚠️ Invalid token format in auth_token, clearing...', {
+          tokenLength: token.length,
+          tokenPreview: token.substring(0, 30),
+          parts: token.split('.').length
+        })
+        localStorage.removeItem('auth_token')
+      }
     }
 
     // Try to get from stored session
@@ -128,15 +159,24 @@ class ApiClient {
         const session = JSON.parse(storedSession)
         const sessionToken = session?.access_token || null
         if (sessionToken) {
-          console.log('🔑 Token retrieved from auth_session:', sessionToken.substring(0, 20) + '...')
+          if (this.isValidJWT(sessionToken)) {
+            console.log('🔑 Token retrieved from auth_session:', sessionToken.substring(0, 20) + '...')
+            return sessionToken
+          } else {
+            console.warn('⚠️ Invalid token format in auth_session, clearing...', {
+              tokenLength: sessionToken.length,
+              tokenPreview: sessionToken.substring(0, 30),
+              parts: sessionToken.split('.').length
+            })
+            localStorage.removeItem('auth_session')
+          }
         }
-        return sessionToken
       } catch {
         return null
       }
     }
 
-    console.warn('⚠️ No token found in storage')
+    console.warn('⚠️ No valid token found in storage')
     return null
   }
 
@@ -442,11 +482,18 @@ class ApiClient {
     const url = `${this.baseURL}/admin/upload`
 
     try {
+      const headers: HeadersInit = {}
+      
+      // Only add Authorization header if token is valid
+      if (token && this.isValidJWT(token)) {
+        headers['Authorization'] = `Bearer ${token}`
+      } else if (token) {
+        console.warn('⚠️ Skipping Authorization header in uploadFile - invalid token format')
+      }
+
       const response = await fetch(url, {
         method: 'POST',
-        headers: {
-          ...(token && { Authorization: `Bearer ${token}` }),
-        },
+        headers,
         body: formData,
       })
 
@@ -568,11 +615,18 @@ class ApiClient {
     const url = `${this.baseURL}/admin/courses/${courseId}/upload`
 
     try {
+      const headers: HeadersInit = {}
+      
+      // Only add Authorization header if token is valid
+      if (token && this.isValidJWT(token)) {
+        headers['Authorization'] = `Bearer ${token}`
+      } else if (token) {
+        console.warn('⚠️ Skipping Authorization header in uploadCourseFile - invalid token format')
+      }
+
       const response = await fetch(url, {
         method: 'POST',
-        headers: {
-          ...(token && { Authorization: `Bearer ${token}` }),
-        },
+        headers,
         body: formData,
       })
 

@@ -138,6 +138,10 @@ export const useSupabaseAuth = () => {
 
   const signUp = async (email: string, password: string, user_metadata?: Record<string, any>) => {
     try {
+      // Clear any old tokens before signup (since signup doesn't return a token anymore)
+      apiClient.clearToken()
+      localStorage.removeItem('auth_session')
+      
       const full_name = user_metadata?.full_name
       const date_of_birth = user_metadata?.date_of_birth
       const response = await apiClient.signup(email, password, user_metadata, full_name, date_of_birth)
@@ -150,43 +154,53 @@ export const useSupabaseAuth = () => {
       if (response.data) {
         const authData = response.data as AuthSession
         
-        // Debug: Log token before storing
-        console.log('✅ Signup successful, token received:', {
-          tokenLength: authData.access_token?.length,
-          tokenPreview: authData.access_token?.substring(0, 20) + '...',
-          expiresIn: authData.expires_in,
-          hasRefreshToken: !!authData.refresh_token,
-          userEmail: authData.user?.email
-        })
-        
-        // Store token and session
-        apiClient.setToken(authData.access_token)
-        localStorage.setItem('auth_session', JSON.stringify(authData))
-        
-        // Verify token was stored
-        const storedToken = apiClient.getToken()
-        console.log('✅ Token stored, verification:', {
-          stored: !!storedToken,
-          storedLength: storedToken?.length,
-          matches: storedToken === authData.access_token
-        })
-        
-        // Verify token works immediately after signup (optional - token is fresh from signup)
-        // This is just for debugging - if it fails, it's not critical since we just got the token
-        try {
-          const verifyResponse = await apiClient.verifyToken(authData.access_token)
-          if (verifyResponse.data) {
-            console.log('✅ Token verification after signup successful:', {
-              userEmail: verifyResponse.data.email,
-              userId: verifyResponse.data.id
-            })
-          } else if (verifyResponse.error) {
-            // Log as warning, not error, since token was just created
-            console.warn('⚠️ Token verification after signup returned error (non-critical):', {
-              error: verifyResponse.error,
-              note: 'Token was just created, this may be a temporary issue'
-            })
+        // Check if token exists (signup may not return token if email verification is required)
+        if (authData.access_token) {
+          // Debug: Log token before storing
+          console.log('✅ Signup successful, token received:', {
+            tokenLength: authData.access_token?.length,
+            tokenPreview: authData.access_token?.substring(0, 20) + '...',
+            expiresIn: authData.expires_in,
+            hasRefreshToken: !!authData.refresh_token,
+            userEmail: authData.user?.email
+          })
+          
+          // Store token and session
+          apiClient.setToken(authData.access_token)
+          localStorage.setItem('auth_session', JSON.stringify(authData))
+          
+          // Verify token was stored
+          const storedToken = apiClient.getToken()
+          console.log('✅ Token stored, verification:', {
+            stored: !!storedToken,
+            storedLength: storedToken?.length,
+            matches: storedToken === authData.access_token
+          })
+          
+          // Verify token works immediately after signup (optional - token is fresh from signup)
+          // This is just for debugging - if it fails, it's not critical since we just got the token
+          try {
+            const verifyResponse = await apiClient.verifyToken(authData.access_token)
+            if (verifyResponse.data) {
+              console.log('✅ Token verification after signup successful:', {
+                userEmail: verifyResponse.data.email,
+                userId: verifyResponse.data.id
+              })
+            } else if (verifyResponse.error) {
+              // Log as warning, not error, since token was just created
+              console.warn('⚠️ Token verification after signup returned error (non-critical):', {
+                error: verifyResponse.error,
+                note: 'Token was just created, this may be a temporary issue'
+              })
+            }
+          } catch (verifyError) {
+            console.warn('⚠️ Token verification after signup failed (non-critical):', verifyError)
           }
+        } else {
+          // No token returned - user needs to verify email first
+          console.log('✅ Signup successful, but no token returned (email verification required)')
+          // Don't store anything - user needs to verify email and then sign in
+        }
         } catch (verifyError) {
           // Log as warning, not error, since this is optional verification
           console.warn('⚠️ Token verification after signup failed (non-critical):', {
