@@ -87,6 +87,23 @@ class ApiClient {
           (typeof data === 'string' ? data : null) ||
           `HTTP ${response.status}: ${response.statusText}` ||
           'An error occurred'
+        
+        // Clear invalid tokens on authentication errors (401, 403)
+        // Especially for malformed token errors
+        if (response.status === 401 || response.status === 403) {
+          const errorStr = String(errorMsg).toLowerCase()
+          if (
+            errorStr.includes('invalid token') ||
+            errorStr.includes('malformed') ||
+            errorStr.includes('invalid number of segments') ||
+            errorStr.includes('unable to parse') ||
+            errorStr.includes('token format')
+          ) {
+            console.warn('⚠️ Invalid/malformed token detected, clearing tokens...')
+            this.clearToken()
+          }
+        }
+        
         console.error(`❌ API Error (${response.status}): ${endpoint}`, {
           url,
           status: response.status,

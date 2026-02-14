@@ -243,10 +243,27 @@ export const useSupabaseAuth = () => {
         const userData = response.data as BackendUser
         setUser(userData)
         return userData
+      } else if (response.error) {
+        // Check if it's an authentication error
+        const errorStr = String(response.error).toLowerCase()
+        if (
+          errorStr.includes('invalid token') ||
+          errorStr.includes('malformed') ||
+          errorStr.includes('invalid number of segments') ||
+          errorStr.includes('unable to parse') ||
+          errorStr.includes('token format') ||
+          errorStr.includes('unauthorized') ||
+          errorStr.includes('forbidden')
+        ) {
+          console.warn('⚠️ Authentication error, clearing tokens and user state')
+          clearAuth()
+        }
       }
       return null
     } catch (error) {
       console.error('Failed to get current user from backend:', error)
+      // Clear auth on any error to be safe
+      clearAuth()
       return null
     }
   }, []) // Empty dependency array since apiClient is stable
