@@ -646,12 +646,12 @@ export default function AdminUploadPage() {
 
           {/* Logo Row - Centered */}
           <div className="flex justify-center mb-4 sm:mb-6">
-            <div className="relative w-full max-w-[280px] sm:max-w-[320px] md:w-96 h-24 sm:h-28 md:h-36">
+            <div className="relative w-full max-w-[400px] sm:max-w-[480px] md:max-w-[560px] lg:max-w-[640px] h-32 sm:h-40 md:h-48 lg:h-56">
               <Image
                 src={adminSrc}
                 alt="LovEdu Admin Logo"
                 fill
-                sizes="(max-width: 640px) 100vw, (max-width: 768px) 320px, 384px"
+                sizes="(max-width: 640px) 400px, (max-width: 768px) 480px, (max-width: 1024px) 560px, 640px"
                 className="object-contain"
                 priority
                 unoptimized
