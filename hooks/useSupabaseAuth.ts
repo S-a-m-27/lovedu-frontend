@@ -201,20 +201,21 @@ export const useSupabaseAuth = () => {
           console.log('✅ Signup successful, but no token returned (email verification required)')
           // Don't store anything - user needs to verify email and then sign in
         }
-        } catch (verifyError) {
-          // Log as warning, not error, since this is optional verification
-          console.warn('⚠️ Token verification after signup failed (non-critical):', {
-            error: verifyError instanceof Error ? verifyError.message : String(verifyError),
-            note: 'Token was just created, verification will happen on next request'
-          })
+        
+        // Update state (only if user data exists)
+        if (authData.user) {
+          setUser(authData.user)
+          // Only set session if we have a token
+          if (authData.access_token) {
+            setSession(authData)
+          } else {
+            // No session if no token (email verification required)
+            setSession(null)
+          }
         }
         
-        // Update state
-        setUser(authData.user)
-        setSession(authData)
-        
         return { data: { user: authData.user, session: authData }, error: null }
-  }
+      }
 
       console.error('❌ Signup failed - no data in response')
       return { data: null, error: { message: 'Signup failed' } }
